@@ -16,7 +16,7 @@ from typing import (
 )
 
 import numpy as np
-
+from chromadb import ChromaDB
 from langchain.docstore.document import Document
 from langchain.embeddings.base import Embeddings
 from langchain.utils import xor_args
@@ -47,7 +47,6 @@ def _results_to_docs_and_scores(results: Any) -> List[Tuple[Document, float]]:
             results["distances"][0],
         )
     ]
-
 
 class Chroma(VectorStore):
     """Wrapper around ChromaDB embeddings platform.
@@ -551,3 +550,22 @@ class Chroma(VectorStore):
             ids: List of ids to delete.
         """
         self._collection.delete(ids=ids)
+
+
+    def to_json_chromadb(obj: ChromaDB) -> dict:
+        """Serialize a ChromaDB object.
+
+        Args:
+            obj: ChromaDB object to serialize
+
+        Returns:
+            Serialized representation of the ChromaDB object.
+        """
+        _id = ["chromadb.ChromaDB"]  # Set the identifier for ChromaDB object
+
+        return {
+            "lc": 1,
+            "type": "chromadb",
+            "id": _id,
+            "data": obj.get_data()  # Include the serialized data from ChromaDB object
+        }
